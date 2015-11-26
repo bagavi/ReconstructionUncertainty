@@ -45,7 +45,9 @@ class Genome:
         
     def AnalyzeRepeatStructure(self):
         RepeatValues = list( self.RepeatsHashDictionary.values())
-        RepeatValues.sort()
+        RepeatValues.sort(reverse = True)
+        print ( RepeatValues[:10] )
+    
 Staphylococcus = Genome("StaphylococcusAureus.fasta")
 Staphylococcus.RepeatsofgivenLength(100)
 
