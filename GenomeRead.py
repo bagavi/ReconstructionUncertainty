@@ -35,7 +35,7 @@ class Genome:
         unit = 1
         for position in range( len(self.DNA_current) ):
             if position%5000 == 0:
-                print(" In position", position, "Unit", unit)
+                print(" In position", position, "Unit", unit, "Breakpoint", self.Breakpoint)
                 unit +=1
                 if unit == self.Breakpoint:
                     break
@@ -60,7 +60,7 @@ else:
 if len( sys.argv )> 1 :
     Breakpoint = int( float( sys.argv[1] ) )
 else:
-    Breakpoint = int( 2 )
+    Breakpoint = int( -1 )
     
 Staphylococcus = Genome("StaphylococcusAureus.fasta", Breakpoint)
 Staphylococcus.RepeatsofgivenLength(RepeatLength)
