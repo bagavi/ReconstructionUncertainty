@@ -58,7 +58,7 @@ else:
     
 
 if len( sys.argv )> 1 :
-    Breakpoint = int( float( sys.argv[1] ) )
+    Breakpoint = int( float( sys.argv[2] ) )
 else:
     Breakpoint = int( -1 )
     
