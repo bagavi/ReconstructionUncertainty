@@ -35,7 +35,7 @@ class Genome:
         unit = 1
         for position in range( len(self.DNA_current) ):
             if position%5000 == 0:
-                print("In position", position, "Unit", unit, "Breakpoint", self.Breakpoint, "DNA length", len(self.DNA_current) )
+                print("In position", position, "Unit", unit, "Breakpoint", self.Breakpoint, "DNA left", len(self.DNA_current) - position )
                 unit +=1
                 if unit == self.Breakpoint:
                     break
