@@ -1,5 +1,5 @@
 from Bio import SeqIO
-
+import sys
 class Genome:
     Name = ""
     DNAList= []
@@ -46,10 +46,16 @@ class Genome:
     def AnalyzeRepeatStructure(self):
         RepeatValues = list( self.RepeatsHashDictionary.values())
         RepeatValues.sort(reverse = True)
-        print ( RepeatValues[:10] )
+        print ( RepeatValues[:100] )
+
+
+if len( sys.argv )> 1 :
+    RepeatLength = int( float( sys.argv[1] ) )
+else:
+    RepeatLength = int( 1000 )
     
 Staphylococcus = Genome("StaphylococcusAureus.fasta")
-Staphylococcus.RepeatsofgivenLength(100)
+Staphylococcus.RepeatsofgivenLength(RepeatLength)
 
 # Rhodobacter = Genome("RhodobacterSphaeroides.fasta")
 # Rhodobacter.RepeatsofgivenLength(100)
