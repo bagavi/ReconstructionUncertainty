@@ -6,8 +6,10 @@ class Genome:
     DNA_current = []
     ReadLength_Considered = 100
     RepeatsHashDictionary = dict()
+    Breakpoint = 100
     
-    def __init__(self, filename=""):
+    def __init__(self, filename, Breakpoint):
+        self.Breakpoint = Breakpoint
         Handle = open(filename)
         for seq_record in SeqIO.parse(Handle, "fasta"):
             self.DNAList.append(seq_record.seq)
@@ -35,7 +37,7 @@ class Genome:
             if position%5000 == 0:
                 print(" In position", position, "Unit", unit)
                 unit +=1
-                if unit == 100:
+                if unit == self.Breakpoint:
                     break
             Read = tuple( self.__getLength_L_read(position))
             ReadString = ''.join(Read)
@@ -54,7 +56,13 @@ if len( sys.argv )> 1 :
 else:
     RepeatLength = int( 1000 )
     
-Staphylococcus = Genome("StaphylococcusAureus.fasta")
+
+if len( sys.argv )> 1 :
+    Breakpoint = int( float( sys.argv[1] ) )
+else:
+    Breakpoint = int( 2 )
+    
+Staphylococcus = Genome("StaphylococcusAureus.fasta", Breakpoint)
 Staphylococcus.RepeatsofgivenLength(RepeatLength)
 
 # Rhodobacter = Genome("RhodobacterSphaeroides.fasta")
