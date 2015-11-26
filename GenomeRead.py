@@ -30,9 +30,13 @@ class Genome:
         self.ReadLength_Considered = length
         self.RepeatsHashDictionary = dict()
         self.DNA_current = self.DNAList[0]
+        unit = 1
         for position in range( len(self.DNA_current) ):
             if position%5000 == 0:
-                print(" In position", position)
+                print(" In position", position, "Unit", unit)
+                unit +=1
+                if unit == 100:
+                    break
             Read = tuple( self.__getLength_L_read(position))
             ReadString = ''.join(Read)
             self.__IncreamentDictElement(ReadString)
