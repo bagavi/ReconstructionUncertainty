@@ -13,9 +13,11 @@ class Genome:
     Breakpoint = 100
     Filename = ""
     SideLengths = 1
-    def __init__(self, Filename):
-        Handle = open(Filename)
+    Gap = 1
+    def __init__(self, Filename, Gap):
+        self.Gap = Gap
         self.Filename = Filename
+        Handle = open(Filename)
         for seq_record in SeqIO.parse(Handle, "fasta"):
             self.DNAList.append(str(seq_record.seq))
         print( "Length of the DNA is", len(self.DNAList[0]))
@@ -98,17 +100,22 @@ class Genome:
         if False:
             print("Length of the DNA is", len(self.DNA_current))
             print("Number of reads repeating of length", self.ReadLength_Considered," is", len(CountInfo))
-            print("Uncertainity", sum(CountInfo))
             print("Time", datetime.datetime.now())
-        
+        print("Uncertainity", sum(CountInfo))
+            
 if len( sys.argv )> 1 :
     MaxReadLength = int( float( sys.argv[1] ) )
 else:
     MaxReadLength = int( 100)
     
+if len( sys.argv )> 2 :
+    Gap = int( float( sys.argv[2] ) )
+else:
+    Gap = int(5)
+    
 
 Staphylococcus = Genome("StaphylococcusAureus.fasta")
-Staphylococcus.getUncertainty(MaxReadLength)
+Staphylococcus.getUncertainty(MaxReadLength,Gap)
 
 # Rhodobacter = Genome("RhodobacterSphaeroides.fasta")
 # 
