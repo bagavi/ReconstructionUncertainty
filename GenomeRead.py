@@ -113,8 +113,8 @@ else:
     Gap = int(5)
     
 
-Staphylococcus = Genome("StaphylococcusAureus.fasta")
-Staphylococcus.getUncertainty(MaxReadLength,Gap)
+Staphylococcus = Genome("StaphylococcusAureus.fasta",Gap)
+Staphylococcus.getUncertainty(MaxReadLength)
 
 # Rhodobacter = Genome("RhodobacterSphaeroides.fasta")
 # 
