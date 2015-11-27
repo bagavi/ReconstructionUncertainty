@@ -1,5 +1,5 @@
 from Bio import SeqIO
-import sys, numpy
+import sys, numpy, math
 import CommonFunctions
 from CommonFunctions import WriteArrayinFile
 from operator import itemgetter
@@ -75,7 +75,7 @@ class Genome:
                 if Repeat > 0:
                     if len( set(LeftNeighbhors) ) != 1 or len( set(RightNeighbors) ) != 1:
                         print("YAY", "LeftNeighbhours", LeftNeighbhors, "Read", read, "Right Neighbors", RightNeighbors)
-                        CountInfo += [ Repeat ]
+                        CountInfo += [ Repeat *math.log(len( set(RightNeighbors) ))]
                         ReadInfo += [ CurrentString ]
                         WriteInfo += [ [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, read[1], -1, Repeat ] ]
                 elif len( set(LeftNeighbhors) ) == 1 and len( set(RightNeighbors) ) == 1 and Repeat > 0:

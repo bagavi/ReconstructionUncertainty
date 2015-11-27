@@ -47,9 +47,12 @@ def CheckProbabilitiesSumtoOne( Array ):
             print( "Probabilites not summing to one!")
             
 def WriteArrayinFile( Array, Filename ):
-    with open( Filename, 'w', newline = '') as f:                                    
-            writer = csv.writer(f)                                                       
-            writer.writerows(Array)
+#     try:
+#         with open( Filename, 'w', newline = '') as f:
+#     except:
+    with open( Filename, 'w',) as f:
+        writer = csv.writer(f)                                                       
+        writer.writerows(Array)
             
 def ReWriteArrayinFile( Array, Filename ):
     try:
