@@ -47,7 +47,7 @@ class Genome:
         self.DNA_current = self.DNAList[0]
         Reads = []
         print("Read Length", length)
-        for position in range(self.SideLengths, len(self.DNA_current) - self.ReadLength_Considered - self.SideLengths):
+        for position in range(self.SideLengths, len(self.DNA_current) - self.ReadLength_Considered - self.SideLengths - 1872915):
             if position % 1000000 == 0:
                 print("In position", position, "DNA left", len(self.DNA_current) - position )           
             Reads += [ [ self.DNA_current[position - self.SideLengths:                             position] ,
@@ -112,7 +112,7 @@ else:
     Gap = int(5)
 
 Staphylococcus = Genome("StaphylococcusAureus.fasta", Gap)
-Staphylococcus.getUncertainty(3)
+Staphylococcus.getUncertainty(MaxReadLength)
 
 # Rhodobacter = Genome("RhodobacterSphaeroides.fasta")
 # 
