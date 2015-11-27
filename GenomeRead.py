@@ -36,9 +36,11 @@ class Genome:
             return ( self.DNA_current[position: position + self.ReadLength_Considered])
     
     def getUncertainty(self, MaxLength):
+        Summary = []
         for length in range(1,MaxLength):
-            self.RepeatsofLengthL(length)
-            
+            Summary += [ self.RepeatsofLengthL(length) ]
+        CommonFunctions.ReWriteArrayinFile(Summary, "Summary_"+self.Filename[:-6]+".csv")
+#     
     def RepeatsofLengthL(self, length = 100):
         self.ReadLength_Considered = length
         self.RepeatsHashDictionary = dict()
@@ -76,8 +78,6 @@ class Genome:
                 RightNeighbors += read[2]
             else:
                 if Repeat > 0:
-                    TempReads += [ [read[1] ]+[ "","Left",] + LeftNeighbhors +[ "","Right",]+ RightNeighbors ]
-                if Repeat > 0:
                     if len( set(LeftNeighbhors) ) != 1 or len( set(RightNeighbors) ) != 1:
 #                         print("YAY", "LeftNeighbhours", set(LeftNeighbhors), "Read", read, "Right Neighbors", set(RightNeighbors) )
                         CountInfo += [ Repeat *math.log(len( set(RightNeighbors) ), 2)]
@@ -90,31 +90,29 @@ class Genome:
                 RightNeighbors = []
                 Repeat = 0
                 CurrentString = read[1]
-        WriteArrayinFile(TempReads, "TempRead.csv")                
+     #   WriteArrayinFile(TempReads, "TempRead.csv")                
         CountInfo.sort(key=None, reverse=True)
         CommonFunctions.ReWriteArrayinFile(WriteInfo,'RepeatData.csv')
-        Summary = [[ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo), datetime.datetime.now() ]]
-        CommonFunctions.ReWriteArrayinFile(Summary, "Summary_"+self.Filename[:-6]+".csv")
-#         print( CountInfo[:100] )
+        Summary = [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo), datetime.datetime.now() ]
         if False:
             print("Length of the DNA is", len(self.DNA_current))
             print("Number of reads repeating of length", self.ReadLength_Considered," is", len(CountInfo))
             print("Time", datetime.datetime.now())
         print("Uncertainity", sum(CountInfo))
-            
+        
+        return(Summary)
 if len( sys.argv )> 1 :
     MaxReadLength = int( float( sys.argv[1] ) )
 else:
-    MaxReadLength = int( 100)
+    MaxReadLength = int( 10)
     
 if len( sys.argv )> 2 :
     Gap = int( float( sys.argv[2] ) )
 else:
     Gap = int(5)
-    
 
-Staphylococcus = Genome("StaphylococcusAureus.fasta",Gap)
-Staphylococcus.getUncertainty(MaxReadLength)
+Staphylococcus = Genome("StaphylococcusAureus.fasta", Gap)
+Staphylococcus.getUncertainty(3)
 
 # Rhodobacter = Genome("RhodobacterSphaeroides.fasta")
 # 
