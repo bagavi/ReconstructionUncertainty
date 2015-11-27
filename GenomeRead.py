@@ -12,7 +12,7 @@ class Genome:
     RepeatsHashDictionary = dict()
     Breakpoint = 100
     Filename = ""
-    SideLengths = 5
+    SideLengths = 1
     def __init__(self, Filename):
         Handle = open(Filename)
         self.Filename = Filename
@@ -39,18 +39,19 @@ class Genome:
         self.DNA_current = self.DNAList[0]
         Reads = []
         #2872915
-        for position in range(self.SideLengths, len(self.DNA_current) - self.ReadLength_Considered - self.SideLengths ):#- 2772915):
+        for position in range(self.SideLengths, len(self.DNA_current) - self.ReadLength_Considered - self.SideLengths):
             if position % 500000 == 0:
                 print("In position", position, "DNA left", len(self.DNA_current) - position )           
             Reads += [ [ self.DNA_current[position - self.SideLengths:                             position] ,
                          self.DNA_current[position                   :position + self.ReadLength_Considered] ,
-                         self.DNA_current[position + self.ReadLength_Considered : position + self.ReadLength_Considered + self.SideLengths]
+                         self.DNA_current[position + self.ReadLength_Considered : position + self.ReadLength_Considered + self.SideLengths],
+                         position
                          ] ]
         print("Sorting Read Array")
         Reads.sort(key=itemgetter(1), reverse=False)
         CountInfo = []
         ReadInfo = []
-        
+        print( Reads[:10])
         print("Counting Repeats")
         CurrentString = Reads[0][1]
         Repeat = 0
@@ -58,34 +59,47 @@ class Genome:
         WriteInfo = [ [Titles ] ]
         LeftNeighbhors = []
         RightNeighbors = []
+        counter = 0
+        TempReads = []
         for read in Reads[1:]:
+            counter +=1
+#             if counter%50000 == 0:
+#                 print("Counter", counter, "Reads", len(Reads) )
             if read[1] == CurrentString:
                 Repeat += 1
                 LeftNeighbhors += read[0]
                 RightNeighbors += read[2]
             else:
-                if len( set(LeftNeighbhors) ) != 0 and len( set(RightNeighbors) ) != 0 and Repeat > 0:
-                    CountInfo += [  Repeat ]
-                    ReadInfo += [ CurrentString ]
-                    WriteInfo += [ [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, read, -1, Repeat ] ]
-                if len( set(LeftNeighbhors) ) == 0 and len( set(RightNeighbors) ) == 0 and Repeat > 0:
+                if Repeat > 0:
+                    TempReads += [ [read[1] ]+[ "","Left",] + LeftNeighbhors +[ "","Right",]+ RightNeighbors ]
+                if Repeat > 0:
+                    if len( set(LeftNeighbhors) ) != 1 or len( set(RightNeighbors) ) != 1:
+                        print("YAY", "LeftNeighbhours", LeftNeighbhors, "Read", read, "Right Neighbors", RightNeighbors)
+                        CountInfo += [ Repeat ]
+                        ReadInfo += [ CurrentString ]
+                        WriteInfo += [ [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, read[1], -1, Repeat ] ]
+                elif len( set(LeftNeighbhors) ) == 1 and len( set(RightNeighbors) ) == 1 and Repeat > 0:
                     print( "Saved!" ,Repeat)
+                
+                LeftNeighbhors = []
+                RightNeighbors = []
                 Repeat = 0
-                CurrentString = read
+                CurrentString = read[1]
+        WriteArrayinFile(TempReads, "TempRead.csv")                
         CountInfo.sort(key=None, reverse=True)
         CommonFunctions.ReWriteArrayinFile(WriteInfo,'RepeatData.csv')
         Summary =  [ "Gene",        "DNA length",           "Spectrum Length",          "Number of repeat reads", "Uncertainty upperbound"]
-        Summary += [[ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), 2*sum(CountInfo) ]]
+        Summary += [[ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo) ]]
         CommonFunctions.ReWriteArrayinFile(Summary, "Summary.csv")
 #         print( CountInfo[:100] )
         print("Length of the DNA is", len(self.DNA_current))
         print("Number of reads repeating of length", self.ReadLength_Considered," is", len(CountInfo))
-        print("Uncertainity", 2*sum(CountInfo))
+        print("Uncertainity", sum(CountInfo))
         
 if len( sys.argv )> 1 :
     RepeatLength = int( float( sys.argv[1] ) )
 else:
-    RepeatLength = int( 50)
+    RepeatLength = int( 100)
     
 
 Staphylococcus = Genome("StaphylococcusAureus.fasta")
