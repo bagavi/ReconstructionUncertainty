@@ -1,5 +1,5 @@
 from Bio import SeqIO
-import sys, numpy, math
+import sys, numpy, math, datetime
 import CommonFunctions
 from CommonFunctions import WriteArrayinFile
 from operator import itemgetter
@@ -92,13 +92,14 @@ class Genome:
         CountInfo.sort(key=None, reverse=True)
         CommonFunctions.ReWriteArrayinFile(WriteInfo,'RepeatData.csv')
         Summary =  [ [ "Gene",        "DNA length",           "Spectrum Length",          "Number of repeat reads", "Uncertainty upperbound"]]
-        Summary += [[ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo) ]]
+        Summary += [[ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo), datetime.datetime.now() ]]
         CommonFunctions.ReWriteArrayinFile(Summary, "Summary"+self.Filename)
 #         print( CountInfo[:100] )
         if False:
             print("Length of the DNA is", len(self.DNA_current))
             print("Number of reads repeating of length", self.ReadLength_Considered," is", len(CountInfo))
             print("Uncertainity", sum(CountInfo))
+            print("Time", datetime.datetime.now())
         
 if len( sys.argv )> 1 :
     MaxReadLength = int( float( sys.argv[1] ) )
@@ -107,7 +108,7 @@ else:
     
 
 Staphylococcus = Genome("StaphylococcusAureus.fasta")
-Staphylococcus.getUncertainty(2)
+Staphylococcus.getUncertainty(3)
 
 # Rhodobacter = Genome("RhodobacterSphaeroides.fasta")
 # 
