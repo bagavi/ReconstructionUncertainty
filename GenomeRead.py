@@ -44,7 +44,31 @@ class Genome:
             self.__IncreamentDictElement(ReadString)
         
         self.AnalyzeRepeatStructure()
+    
+    def Test(self, length = 100):
+        self.ReadLength_Considered = length
+        self.RepeatsHashDictionary = dict()
+        self.DNA_current = self.DNAList[0]
+        Reads = []
+        for position in range(len(self.DNA_current) - self.ReadLength_Considered):
+             if position%5000 == 0:
+                print("In position", position, "DNA left", len(self.DNA_current) - position )
+                
+             Reads += [ self.DNA_current[position:position + self.ReadLength_Considered] ]
         
+        Reads.sort(key=None, reverse=False)
+        CountInfo = []
+        
+        CurrentString = Reads[0]
+        Repeat = 1
+        for read in Reads[1:]:
+            if read == CurrentString:
+                Repeat += 1
+            else:
+                CountInfo += [ [ CurrentString, Repeat] ]
+                Repeat = 0
+                CurrentString = read
+    
     def AnalyzeRepeatStructure(self):
         RepeatValues = list( self.RepeatsHashDictionary.values())
         RepeatValues.sort(reverse = True)
@@ -57,13 +81,13 @@ else:
     RepeatLength = int( 1000 )
     
 
-if len( sys.argv )> 1 :
+if len( sys.argv )> 2 :
     Breakpoint = int( float( sys.argv[2] ) )
 else:
     Breakpoint = int( -1 )
     
 Staphylococcus = Genome("StaphylococcusAureus.fasta", Breakpoint)
-Staphylococcus.RepeatsofgivenLength(RepeatLength)
+Staphylococcus.Test(RepeatLength)
 
 # Rhodobacter = Genome("RhodobacterSphaeroides.fasta")
 # Rhodobacter.RepeatsofgivenLength(100)
