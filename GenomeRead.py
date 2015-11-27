@@ -93,8 +93,7 @@ class Genome:
         WriteArrayinFile(TempReads, "TempRead.csv")                
         CountInfo.sort(key=None, reverse=True)
         CommonFunctions.ReWriteArrayinFile(WriteInfo,'RepeatData.csv')
-        Summary =  [ [ "Gene",        "DNA length",           "Spectrum Length",          "Number of repeat reads", "Uncertainty upperbound"]]
-        Summary += [[ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo), datetime.datetime.now() ]]
+        Summary = [[ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo), datetime.datetime.now() ]]
         CommonFunctions.ReWriteArrayinFile(Summary, "Summary_"+self.Filename[:-6]+".csv")
 #         print( CountInfo[:100] )
         if False:
