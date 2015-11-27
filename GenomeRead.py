@@ -51,7 +51,6 @@ class Genome:
         Reads.sort(key=itemgetter(1), reverse=False)
         CountInfo = []
         ReadInfo = []
-        print( Reads[:10])
         print("Counting Repeats")
         CurrentString = Reads[0][1]
         Repeat = 0
@@ -74,8 +73,8 @@ class Genome:
                     TempReads += [ [read[1] ]+[ "","Left",] + LeftNeighbhors +[ "","Right",]+ RightNeighbors ]
                 if Repeat > 0:
                     if len( set(LeftNeighbhors) ) != 1 or len( set(RightNeighbors) ) != 1:
-                        print("YAY", "LeftNeighbhours", LeftNeighbhors, "Read", read, "Right Neighbors", RightNeighbors)
-                        CountInfo += [ Repeat *math.log(len( set(RightNeighbors) ))]
+                        print("YAY", "LeftNeighbhours", set(LeftNeighbhors), "Read", read, "Right Neighbors", set(RightNeighbors) )
+                        CountInfo += [ Repeat *math.log(len( set(RightNeighbors), 2 ))]
                         ReadInfo += [ CurrentString ]
                         WriteInfo += [ [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, read[1], -1, Repeat ] ]
                 elif len( set(LeftNeighbhors) ) == 1 and len( set(RightNeighbors) ) == 1 and Repeat > 0:
