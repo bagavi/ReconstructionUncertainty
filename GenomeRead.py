@@ -1,5 +1,5 @@
 from Bio import SeqIO
-import sys
+import sys, numpy
 class Genome:
     Name = ""
     DNAList= []
@@ -8,11 +8,10 @@ class Genome:
     RepeatsHashDictionary = dict()
     Breakpoint = 100
     
-    def __init__(self, filename, Breakpoint):
-        self.Breakpoint = Breakpoint
+    def __init__(self, filename):
         Handle = open(filename)
         for seq_record in SeqIO.parse(Handle, "fasta"):
-            self.DNAList.append(seq_record.seq)
+            self.DNAList.append(str(seq_record.seq))
         print( "Length of the DNA is", len(self.DNAList[0]))
         
     def __IncreamentDictElement(self, key ):
@@ -27,23 +26,23 @@ class Genome:
             return ( self.DNA_current[position:] + self.DNA_current[:Extra] )
         else:
             return ( self.DNA_current[position: position + self.ReadLength_Considered])
-        
-    def RepeatsofgivenLength(self, length = 100):
-        self.ReadLength_Considered = length
-        self.RepeatsHashDictionary = dict()
-        self.DNA_current = self.DNAList[0]
-        unit = 1
-        for position in range( len(self.DNA_current) ):
-            if position%5000 == 0:
-                print("In position", position, "Unit", unit, "Breakpoint", self.Breakpoint, "DNA left", len(self.DNA_current) - position )
-                unit +=1
-                if unit == self.Breakpoint:
-                    break
-            Read = tuple( self.__getLength_L_read(position))
-            ReadString = ''.join(Read)
-            self.__IncreamentDictElement(ReadString)
-        
-        self.AnalyzeRepeatStructure()
+# 
+#     def RepeatsofgivenLength(self, length = 100):
+#         self.ReadLength_Considered = length
+#         self.RepeatsHashDictionary = dict()
+#         self.DNA_current = self.DNAList[0]
+#         unit = 1
+#         for position in range( len(self.DNA_current) ):
+#             if position%5000 == 0:
+#                 print("In position", position, "Unit", unit, "Breakpoint", self.Breakpoint, "DNA left", len(self.DNA_current) - position )
+#                 unit +=1
+#                 if unit == self.Breakpoint:
+#                     break
+#             Read = tuple( self.__getLength_L_read(position))
+#             ReadString = ''.join(Read)
+#             self.__IncreamentDictElement(ReadString)
+#         
+#         self.AnalyzeRepeatStructure()
     
     def Test(self, length = 100):
         self.ReadLength_Considered = length
@@ -51,42 +50,41 @@ class Genome:
         self.DNA_current = self.DNAList[0]
         Reads = []
         for position in range(len(self.DNA_current) - self.ReadLength_Considered):
-             if position%5000 == 0:
-                print("In position", position, "DNA left", len(self.DNA_current) - position )
+             if position % 50000 == 0:
+                 print("In position", position, "DNA left", len(self.DNA_current) - position )
                 
              Reads += [ self.DNA_current[position:position + self.ReadLength_Considered] ]
         
+        print("Sorting Read Array")
         Reads.sort(key=None, reverse=False)
         CountInfo = []
+        ReadInfo = []
         
+        print("Counting Repeats")
         CurrentString = Reads[0]
-        Repeat = 1
+        Repeat = 0
         for read in Reads[1:]:
             if read == CurrentString:
                 Repeat += 1
             else:
-                CountInfo += [ [ CurrentString, Repeat] ]
+                if Repeat > 0:
+                    CountInfo += [  Repeat ]
+                    ReadInfo += [ CurrentString ]
                 Repeat = 0
                 CurrentString = read
-    
-    def AnalyzeRepeatStructure(self):
-        RepeatValues = list( self.RepeatsHashDictionary.values())
-        RepeatValues.sort(reverse = True)
-        print ( RepeatValues[:100] )
-
-
+        CountInfo.sort(key=None, reverse=True)
+#         print( CountInfo[:100] )
+        print("Length of the DNA is", len(self.DNA_current))
+        print("Number of reads repeating of length", self.ReadLength_Considered," is", len(CountInfo))
+        print("Uncertainity", 2*sum(CountInfo))
+        
 if len( sys.argv )> 1 :
     RepeatLength = int( float( sys.argv[1] ) )
 else:
-    RepeatLength = int( 1000 )
+    RepeatLength = int( 500)
     
 
-if len( sys.argv )> 2 :
-    Breakpoint = int( float( sys.argv[2] ) )
-else:
-    Breakpoint = int( -1 )
-    
-Staphylococcus = Genome("StaphylococcusAureus.fasta", Breakpoint)
+Staphylococcus = Genome("StaphylococcusAureus.fasta")
 Staphylococcus.Test(RepeatLength)
 
 # Rhodobacter = Genome("RhodobacterSphaeroides.fasta")
