@@ -74,7 +74,7 @@ class Genome:
                 if Repeat > 0:
                     if len( set(LeftNeighbhors) ) != 1 or len( set(RightNeighbors) ) != 1:
                         print("YAY", "LeftNeighbhours", set(LeftNeighbhors), "Read", read, "Right Neighbors", set(RightNeighbors) )
-                        CountInfo += [ Repeat *math.log(len( set(RightNeighbors), 2 ))]
+                        CountInfo += [ Repeat *math.log(len( set(RightNeighbors) ), 2)]
                         ReadInfo += [ CurrentString ]
                         WriteInfo += [ [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, read[1], -1, Repeat ] ]
                 elif len( set(LeftNeighbhors) ) == 1 and len( set(RightNeighbors) ) == 1 and Repeat > 0:
