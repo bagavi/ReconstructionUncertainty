@@ -37,7 +37,7 @@ class Genome:
     
     def getUncertainty(self, MaxLength):
         Summary = []
-        for length in range(1,MaxLength):
+        for length in range(99,MaxLength):
             Summary += [ self.RepeatsofLengthL(length) ]
         CommonFunctions.ReWriteArrayinFile(Summary, "Summary_"+self.Filename[:-6]+".csv")
 #     
@@ -47,7 +47,7 @@ class Genome:
         self.DNA_current = self.DNAList[0]
         Reads = []
         print("Read Length", length)
-        for position in range(self.SideLengths, len(self.DNA_current) - self.ReadLength_Considered - self.SideLengths - 1872915):
+        for position in range(self.SideLengths, len(self.DNA_current) - self.ReadLength_Considered - self.SideLengths):
             if position % 1000000 == 0:
                 print("In position", position, "DNA left", len(self.DNA_current) - position )           
             Reads += [ [ self.DNA_current[position - self.SideLengths:                             position] ,
