@@ -75,7 +75,7 @@ class Genome:
                         ]
                     ]
         print("Sorting Read Array")
-        Reads.sort(key=itemgetter(1), reverse=False)
+        Reads = sorted(Reads,key=itemgetter(1) )
         CountInfo = []
         ReadInfo = []
         print("Counting Repeats")
@@ -84,7 +84,10 @@ class Genome:
         Titles = [ "Gene", "Gene Length", "Read Length", "Read", "Neighbhours", "Repeat"]
         LeftNeighbhors = []
         RightNeighbors = []
+        RepeatPositions = []
         counter = 0
+        Is_less_than_critical_length = False
+        Position_of_repeat_less_than_2 = []
         for read in Reads[1:]:
             counter +=1
 #             if counter%50000 == 0:
@@ -93,27 +96,32 @@ class Genome:
                 Repeat += 1
                 LeftNeighbhors += read[0]
                 RightNeighbors += read[2]
+                RepeatPositions += read[3]
             else:
-                if Repeat > 0:
-                    if len( set(RightNeighbors) ) != 1:
-#                         print("YAY", "LeftNeighbhours", set(LeftNeighbhors), "Read", read, "Right Neighbors", set(RightNeighbors) )
-                        Count_stats = Counter(RightNeighbors).values()
-                        try:
-                            Uncertainty = self.factlog(sum(Count_stats))
-                            for i in Count_stats:
-                                Uncertainty -= self.factlog(i)
-                        except:
-                            Uncertainty = 2*(sum(Count_stats))
-                        CountInfo += [ Uncertainty ]
-                
+                if Repeat > 1 and len( set(RightNeighbors) ) != 1:
+                    
+                    #Checking for l_critical
+                    if Repeat > 2:
+                        Is_less_than_critical_length = True
+                    else:
+                        Position_of_repeat_less_than_2 += RepeatPositions
+                    Count_stats = Counter(RightNeighbors).values()
+                    try:
+                        Uncertainty = self.factlog(sum(Count_stats))
+                        for i in Count_stats:
+                            Uncertainty -= self.factlog(i)
+                    except:
+                        Uncertainty = 2*(sum(Count_stats))
+                    CountInfo += [ Uncertainty ]
+            
                 LeftNeighbhors = []
                 RightNeighbors = []
                 Repeat = 0
                 CurrentString = read[1]
-     #   WriteArrayinFile(TempReads, "TempRead.csv")                
-        #CountInfo.sort(key=None, reverse=True)
-        #CommonFunctions.ReWriteArrayinFile(WriteInfo,'RepeatData.csv')
-        Summary = [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo), str(datetime.datetime.now()) ]
+        
+        if Position_of_repeat_less_than_2 != sorted(Position_of_repeat_less_than_2):
+            Is_less_than_critical_length = True
+        Summary = [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo), Is_less_than_critical_length, str(datetime.datetime.now()) ]
         if False:
             print("Length of the DNA is", len(self.DNA_current))
             print("Number of reads repeating of length", self.ReadLength_Considered," is", len(CountInfo))
@@ -122,8 +130,9 @@ class Genome:
         
         return(Summary)
 
-Staphylococcus = Genome("StaphylococcusAureus.fasta", 3)
-Staphylococcus.getUncertainty()
+filename = "Salmonellabongori.fna"
+Gene = Genome(filename, 3)
+Gene.getUncertainty()
 
 
 #RhodobacterSphaeroides = Genome("RhodobacterSphaeroides.fasta", 3)
