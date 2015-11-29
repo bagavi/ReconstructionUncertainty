@@ -95,7 +95,7 @@ class Genome:
                 RightNeighbors += read[2]
             else:
                 if Repeat > 0:
-                    if len( set(LeftNeighbhors) ) != 1 or len( set(RightNeighbors) ) != 1:
+                    if len( set(RightNeighbors) ) != 1:
 #                         print("YAY", "LeftNeighbhours", set(LeftNeighbhors), "Read", read, "Right Neighbors", set(RightNeighbors) )
                         Count_stats = Counter(RightNeighbors).values()
                         try:
@@ -111,7 +111,7 @@ class Genome:
                 Repeat = 0
                 CurrentString = read[1]
      #   WriteArrayinFile(TempReads, "TempRead.csv")                
-        CountInfo.sort(key=None, reverse=True)
+        #CountInfo.sort(key=None, reverse=True)
         #CommonFunctions.ReWriteArrayinFile(WriteInfo,'RepeatData.csv')
         Summary = [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo), str(datetime.datetime.now()) ]
         if False:
