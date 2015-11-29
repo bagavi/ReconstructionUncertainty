@@ -126,7 +126,7 @@ class Genome:
             print("Length of the DNA is", len(self.DNA_current))
             print("Number of reads repeating of length", self.ReadLength_Considered," is", len(CountInfo))
             print("Time", datetime.datetime.now())
-        print("Uncertainity", sum(CountInfo))
+        print("Uncertainity", sum(CountInfo), "Is less than critical length", Is_less_than_critical_length)
         
         return(Summary)
 
