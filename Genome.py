@@ -38,13 +38,13 @@ class Genome:
     
     def getUncertainty(self):
         Summary = []
-        length = 0
+        length = 100
         while True:
             length += self.Gap
             Answer = self.RepeatsofLengthL(length)
             print("Answer", Answer)
             Summary += [ Answer ]
-            if Answer[-2] < 10:
+            if Answer[-3] < 1:
                 break
         CommonFunctions.WriteArrayinFile(Summary, "Precise_Summary_"+self.Filename[:-6]+".csv")
 #   
@@ -87,6 +87,7 @@ class Genome:
         RepeatPositions = []
         counter = 0
         Is_less_than_critical_length = False
+        Reason = "No reason"
         Position_of_repeat_less_than_2 = []
         for read in Reads[1:]:
             counter +=1
@@ -103,8 +104,10 @@ class Genome:
                     #Checking for l_critical
                     if Repeat > 2:
                         Is_less_than_critical_length = True
+                        Reason = "Triple Repeats"
                     else:
                         Position_of_repeat_less_than_2 += RepeatPositions
+                        Reason = "Interleaved Repeats"
                     Count_stats = Counter(RightNeighbors).values()
                     try:
                         Uncertainty = self.factlog(sum(Count_stats))
@@ -127,7 +130,6 @@ class Genome:
             print("Number of reads repeating of length", self.ReadLength_Considered," is", len(CountInfo))
             print("Time", datetime.datetime.now())
         print("Uncertainity", sum(CountInfo), "Is less than critical length", Is_less_than_critical_length)
-        
         return(Summary)
 
 filename = "StaphylococcusAureus.fasta"
