@@ -122,9 +122,9 @@ class Genome:
         
         return(Summary)
 
-# Staphylococcus = Genome("StaphylococcusAureus.fasta", Gap)
-# Staphylococcus.getUncertainty(MaxReadLength)
+Staphylococcus = Genome("StaphylococcusAureus.fasta", 3)
+Staphylococcus.getUncertainty()
 
 
-RhodobacterSphaeroides = Genome("RhodobacterSphaeroides.fasta", 3)
-RhodobacterSphaeroides.getUncertainty()
+#RhodobacterSphaeroides = Genome("RhodobacterSphaeroides.fasta", 3)
+#RhodobacterSphaeroides.getUncertainty()
