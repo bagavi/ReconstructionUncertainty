@@ -73,7 +73,6 @@ class Genome:
         CurrentString = Reads[0][1]
         Repeat = 0
         Titles = [ "Gene", "Gene Length", "Read Length", "Read", "Neighbhours", "Repeat"]
-        WriteInfo = [ [Titles ] ]
         LeftNeighbhors = []
         RightNeighbors = []
         counter = 0
@@ -90,8 +89,6 @@ class Genome:
                     if len( set(LeftNeighbhors) ) != 1 or len( set(RightNeighbors) ) != 1:
 #                         print("YAY", "LeftNeighbhours", set(LeftNeighbhors), "Read", read, "Right Neighbors", set(RightNeighbors) )
                         CountInfo += [ Repeat *math.log(len( set(RightNeighbors) ), 2)]
-                        ReadInfo += [ CurrentString ]
-                        WriteInfo += [ [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, read[1], -1, Repeat ] ]
                 
                 LeftNeighbhors = []
                 RightNeighbors = []
