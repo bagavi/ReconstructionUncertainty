@@ -35,7 +35,7 @@ class Genome:
         else:
             return ( self.DNA_current[position: position + self.ReadLength_Considered])
     
-    def getUncertainty(self, MaxLength):
+    def getUncertainty(self):
         Summary = []
         length = 0
         while True:
@@ -52,7 +52,7 @@ class Genome:
         self.RepeatsHashDictionary = dict()
         self.DNA_current = self.DNAList[0]
         print(len(self.DNA_current))
-        a = input("FFF")
+      #  a = input("FFF")
         Reads = []
         print("Read Length", length)
         for position in range(self.SideLengths, len(self.DNA_current) - self.ReadLength_Considered - self.SideLengths ):
@@ -108,19 +108,10 @@ class Genome:
         print("Uncertainity", sum(CountInfo))
         
         return(Summary)
-if len( sys.argv )> 1 :
-    MaxReadLength = int( float( sys.argv[1] ) )
-else:
-    MaxReadLength = int()
-    
-if len( sys.argv )> 2 :
-    Gap = int( float( sys.argv[2] ) )
-else:
-    Gap = int(1)
 
 # Staphylococcus = Genome("StaphylococcusAureus.fasta", Gap)
 # Staphylococcus.getUncertainty(MaxReadLength)
 
 
-RhodobacterSphaeroides = Genome("RhodobacterSphaeroides.fasta", Gap)
-RhodobacterSphaeroides.getUncertainty(MaxReadLength)
+RhodobacterSphaeroides = Genome("RhodobacterSphaeroides.fasta", 3)
+RhodobacterSphaeroides.getUncertainty()
