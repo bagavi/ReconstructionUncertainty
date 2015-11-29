@@ -3,6 +3,7 @@ import sys, numpy, math, datetime
 import CommonFunctions
 from CommonFunctions import WriteArrayinFile
 from operator import itemgetter
+from collections import Counter
 
 class Genome:
     Name = ""
@@ -45,8 +46,16 @@ class Genome:
             Summary += [ Answer ]
             if Answer[-2] < 10:
                 break
-        CommonFunctions.WriteArrayinFile(Summary, "Summary_"+self.Filename[:-6]+".csv")
-#     
+        CommonFunctions.WriteArrayinFile(Summary, "Precise_Summary_"+self.Filename[:-6]+".csv")
+#   
+    
+
+    def factlog(self,n):
+        return( n*(math.log(n,2) - 1.44269) + 0.5*math.log(2*math.pi*n)) #math.log(math.e,2) = 1.4426950408889634
+#         for i in range(1,n):
+#             sum += math.log(i,2)
+#         return sum
+    
     def RepeatsofLengthL(self, length = 100):
         self.ReadLength_Considered = length
         self.RepeatsHashDictionary = dict()
@@ -88,7 +97,14 @@ class Genome:
                 if Repeat > 0:
                     if len( set(LeftNeighbhors) ) != 1 or len( set(RightNeighbors) ) != 1:
 #                         print("YAY", "LeftNeighbhours", set(LeftNeighbhors), "Read", read, "Right Neighbors", set(RightNeighbors) )
-                        CountInfo += [ Repeat *math.log(len( set(RightNeighbors) ), 2)]
+                        Count_stats = Counter(RightNeighbors).values()
+                        try:
+                            Uncertainty = self.factlog(sum(Count_stats))
+                            for i in Count_stats:
+                                Uncertainty -= self.factlog(i)
+                        except:
+                            Uncertainty = 2*(sum(Count_stats))
+                        CountInfo += [ Uncertainty ]
                 
                 LeftNeighbhors = []
                 RightNeighbors = []
