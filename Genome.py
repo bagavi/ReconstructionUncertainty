@@ -46,7 +46,7 @@ class Genome:
             Summary += [ Answer ]
             if Answer[-3] < 1:
                 break
-        CommonFunctions.WriteArrayinFile(Summary, "Precise_Summary_"+self.Filename[:-6]+".csv")
+        CommonFunctions.WriteArrayinFile(Summary, "Precise2_Summary_"+self.Filename[:-6]+".csv")
 #   
     
 
