@@ -96,7 +96,7 @@ class Genome:
                 Repeat += 1
                 LeftNeighbhors += read[0]
                 RightNeighbors += read[2]
-                RepeatPositions += read[3]
+                RepeatPositions += [ read[3] ]
             else:
                 if Repeat > 1 and len( set(RightNeighbors) ) != 1:
                     
@@ -130,7 +130,7 @@ class Genome:
         
         return(Summary)
 
-filename = "Salmonellabongori.fna"
+filename = "StaphylococcusAureus.fasta"
 Gene = Genome(filename, 3)
 Gene.getUncertainty()
 
