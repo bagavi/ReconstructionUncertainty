@@ -51,10 +51,10 @@ class Genome:
     
 
     def factlog(self,n):
-        return( n*(math.log(n,2) - 1.44269) + 0.5*math.log(2*math.pi*n)) #math.log(math.e,2) = 1.4426950408889634
-#         for i in range(1,n):
-#             sum += math.log(i,2)
-#         return sum
+        if n<20:
+            return(math.log(math.factorial(n)))
+        else:
+            return( n*(math.log(n,2) - 1.44269) + 0.5*math.log(2*math.pi*n)) #math.log(math.e,2) = 1.4426950408889634
     
     def RepeatsofLengthL(self, length = 100):
         self.ReadLength_Considered = length
@@ -104,7 +104,7 @@ class Genome:
                         Is_less_than_critical_length = True
                         Reason = "Triple Repeats"
                     else:
-                        Position_of_repeat_less_than_2 += RepeatPositions
+                        Position_of_repeat_less_than_2 += [ RepeatPositions ]
                     Count_stats = Counter(RightNeighbors).values()
                     try:
                         Uncertainty = self.factlog(sum(Count_stats))
@@ -120,8 +120,8 @@ class Genome:
             
                 CurrentString = read[1]
         
-        if Position_of_repeat_less_than_2 != sorted(Position_of_repeat_less_than_2):
-#            print( Position_of_repeat_less_than_2, sorted(Position_of_repeat_less_than_2))
+        if sorted(Position_of_repeat_less_than_2, key = itemgetter(0)) != sorted(Position_of_repeat_less_than_2, key = itemgetter(1)):
+            print( Position_of_repeat_less_than_2, sorted(Position_of_repeat_less_than_2))
             Reason = "Interleaved Repeats"
             Is_less_than_critical_length = True
 
