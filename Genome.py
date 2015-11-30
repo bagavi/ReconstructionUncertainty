@@ -98,7 +98,7 @@ class Genome:
                 RepeatPositions += [ read[3] ]
             else:
                 if Repeat > 1 and len( set(RightNeighbors) ) != 1:
-                    print(RepeatPositions)
+ #                   print(RepeatPositions)
                     #Checking for l_critical
                     if Repeat > 2:
                         Is_less_than_critical_length = True
@@ -121,7 +121,7 @@ class Genome:
                 CurrentString = read[1]
         
         if sorted(Position_of_repeat_less_than_2, key = itemgetter(0)) != sorted(Position_of_repeat_less_than_2, key = itemgetter(1)):
-            print( Position_of_repeat_less_than_2, sorted(Position_of_repeat_less_than_2))
+           # print( Position_of_repeat_less_than_2, sorted(Position_of_repeat_less_than_2))
             Reason = "Interleaved Repeats"
             Is_less_than_critical_length = True
 
@@ -130,13 +130,13 @@ class Genome:
             print("Length of the DNA is", len(self.DNA_current))
             print("Number of reads repeating of length", self.ReadLength_Considered," is", len(CountInfo))
             print("Time", datetime.datetime.now())
-        print("Uncertainity", sum(CountInfo), "Is less than critical length", Is_less_than_critical_length, "reason", Reason, "Repeat position", Position_of_repeat_less_than_2)
+        print("Uncertainity", sum(CountInfo), "Is less than critical length", Is_less_than_critical_length, "reason", Reason)
         return(Summary)
 
 filename = "RhodobacterSphaeroides.fasta"
 filename = "Buchnera_aphidicola.fasta"
-filename = "StaphylococcusAureus.fasta"
-Gene = Genome(filename, 3)
+#filename = "StaphylococcusAureus.fasta"
+Gene = Genome(filename, 1)
 Gene.getUncertainty()
 
 
