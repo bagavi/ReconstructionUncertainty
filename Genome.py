@@ -38,7 +38,7 @@ class Genome:
     
     def getUncertainty(self):
         Summary = []
-        length = 88
+        length = 0
         while True:
             length += self.Gap
             Answer = self.RepeatsofLengthL(length)
@@ -52,7 +52,7 @@ class Genome:
 
     def factlog(self,n):
         if n<20:
-            return(math.log(math.factorial(n)))
+            return(math.log(math.factorial(n), 2))
         else:
             return( n*(math.log(n,2) - 1.44269) + 0.5*math.log(2*math.pi*n)) #math.log(math.e,2) = 1.4426950408889634
     
@@ -134,6 +134,8 @@ class Genome:
         return(Summary)
 
 filename = "RhodobacterSphaeroides.fasta"
+filename = "Buchnera_aphidicola.fasta"
+filename = "StaphylococcusAureus.fasta"
 Gene = Genome(filename, 3)
 Gene.getUncertainty()
 
