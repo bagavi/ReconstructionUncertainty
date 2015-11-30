@@ -38,7 +38,7 @@ class Genome:
     
     def getUncertainty(self):
         Summary = []
-        length = 75
+        length = 80
         while True:
             length += self.Gap
             Answer = self.RepeatsofLengthL(length)
@@ -82,17 +82,15 @@ class Genome:
         CurrentString = Reads[0][1]
         Repeat = 0
         Titles = [ "Gene", "Gene Length", "Read Length", "Read", "Neighbhours", "Repeat"]
-        LeftNeighbhors = []
-        RightNeighbors = []
-        RepeatPositions = []
-        counter = 0
         Is_less_than_critical_length = False
         Reason = "No reason"
         Position_of_repeat_less_than_2 = []
+        LeftNeighbhors = []
+        RightNeighbors = []
+        RepeatPositions = []
+        Repeat = 0
+
         for read in Reads[1:]:
-            counter +=1
-#             if counter%50000 == 0:
-#                 print("Counter", counter, "Reads", len(Reads) )
             if read[1] == CurrentString:
                 Repeat += 1
                 LeftNeighbhors += read[0]
@@ -100,12 +98,16 @@ class Genome:
                 RepeatPositions += [ read[3] ]
             else:
                 if Repeat > 1 and len( set(RightNeighbors) ) != 1:
-                    
                     #Checking for l_critical
                     if Repeat > 2:
                         Is_less_than_critical_length = True
                         Reason = "Triple Repeats"
                     else:
+                        print(RepeatPositions, "Read", CurrentString)
+                        a = input("fuck")
+                        if sorted(RepeatPositions) != RepeatPositions:
+                            print(RepeatPositions)
+                            a = input("")
                         Position_of_repeat_less_than_2 += RepeatPositions
                         Reason = "Interleaved Repeats"
                     Count_stats = Counter(RightNeighbors).values()
@@ -116,10 +118,11 @@ class Genome:
                     except:
                         Uncertainty = 2*(sum(Count_stats))
                     CountInfo += [ Uncertainty ]
-            
                 LeftNeighbhors = []
                 RightNeighbors = []
+                RepeatPositions = []
                 Repeat = 0
+            
                 CurrentString = read[1]
         
         if Position_of_repeat_less_than_2 != sorted(Position_of_repeat_less_than_2):
