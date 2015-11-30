@@ -97,8 +97,8 @@ class Genome:
                 RightNeighbors += read[2]
                 RepeatPositions += [ read[3] ]
             else:
-                print(RepeatPositions)
                 if Repeat > 1 and len( set(RightNeighbors) ) != 1:
+                    print(RepeatPositions)
                     #Checking for l_critical
                     if Repeat > 2:
                         Is_less_than_critical_length = True
