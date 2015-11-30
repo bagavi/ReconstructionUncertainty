@@ -38,7 +38,7 @@ class Genome:
     
     def getUncertainty(self):
         Summary = []
-        length = 80
+        length = 88
         while True:
             length += self.Gap
             Answer = self.RepeatsofLengthL(length)
@@ -103,11 +103,6 @@ class Genome:
                         Is_less_than_critical_length = True
                         Reason = "Triple Repeats"
                     else:
-                        print(RepeatPositions, "Read", CurrentString)
-                        a = input("fuck")
-                        if sorted(RepeatPositions) != RepeatPositions:
-                            print(RepeatPositions)
-                            a = input("")
                         Position_of_repeat_less_than_2 += RepeatPositions
                         Reason = "Interleaved Repeats"
                     Count_stats = Counter(RightNeighbors).values()
@@ -126,6 +121,7 @@ class Genome:
                 CurrentString = read[1]
         
         if Position_of_repeat_less_than_2 != sorted(Position_of_repeat_less_than_2):
+            print( Position_of_repeat_less_than_2, sorted(Position_of_repeat_less_than_2))
             Is_less_than_critical_length = True
         Summary = [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo), Is_less_than_critical_length, str(datetime.datetime.now()) ]
         if False:
@@ -135,7 +131,7 @@ class Genome:
         print("Uncertainity", sum(CountInfo), "Is less than critical length", Is_less_than_critical_length, "reason", Reason, "Repeat position", Position_of_repeat_less_than_2)
         return(Summary)
 
-filename = "RhodobacterSphaeroides.fasta"
+filename = "Buchnera_aphidicola.fasta"
 Gene = Genome(filename, 3)
 Gene.getUncertainty()
 
