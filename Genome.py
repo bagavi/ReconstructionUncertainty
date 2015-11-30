@@ -38,7 +38,7 @@ class Genome:
     
     def getUncertainty(self):
         Summary = []
-        length = 100
+        length = 75
         while True:
             length += self.Gap
             Answer = self.RepeatsofLengthL(length)
@@ -132,7 +132,7 @@ class Genome:
         print("Uncertainity", sum(CountInfo), "Is less than critical length", Is_less_than_critical_length, "reason", Reason, "Repeat position", Position_of_repeat_less_than_2)
         return(Summary)
 
-filename = "StaphylococcusAureus.fasta"
+filename = "RhodobacterSphaeroides.fasta"
 Gene = Genome(filename, 3)
 Gene.getUncertainty()
 
