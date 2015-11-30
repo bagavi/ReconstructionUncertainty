@@ -121,7 +121,7 @@ class Genome:
                 CurrentString = read[1]
         
         if Position_of_repeat_less_than_2 != sorted(Position_of_repeat_less_than_2):
-            print( Position_of_repeat_less_than_2, sorted(Position_of_repeat_less_than_2))
+#            print( Position_of_repeat_less_than_2, sorted(Position_of_repeat_less_than_2))
             Is_less_than_critical_length = True
         Summary = [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo), Is_less_than_critical_length, str(datetime.datetime.now()) ]
         if False:
