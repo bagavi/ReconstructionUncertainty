@@ -6,15 +6,12 @@ from operator import itemgetter
 from collections import Counter
 
 class Genome:
-    Name = ""
     DNAList= []
     DNA_current = []
     ReadLength_Considered = 100
-    RepeatsHashDictionary = dict()
-    Breakpoint = 100
-    Filename = ""
+    Filename    = ""
     SideLengths = 1
-    Gap = 1
+    Gap         = 1
     def __init__(self, Filename, Gap):
         self.Gap = Gap
         self.Filename = Filename
@@ -22,19 +19,7 @@ class Genome:
         for seq_record in SeqIO.parse(Handle, "fasta"):
             self.DNAList.append(str(seq_record.seq))
         print( "Length of the DNA is", len(self.DNAList[0]))
-        
-    def __IncreamentDictElement(self, key ):
-        self.RepeatsHashDictionary[ key  ] = self.RepeatsHashDictionary.get(key, 0) + 1
     
-    def __getDictValue(self, key ):
-        return( self.RepeatsHashDictionary.get( tuple(key), 0) )
-    
-    def __getLength_L_read(self, position = 0):
-        Extra = max( position -  len(self.DNA_current) + self.ReadLength_Considered, 0 )
-        if Extra > 0 :
-            return ( self.DNA_current[position:] + self.DNA_current[:Extra] )
-        else:
-            return ( self.DNA_current[position: position + self.ReadLength_Considered])
     
     def getUncertainty(self):
         Summary = []
@@ -58,7 +43,6 @@ class Genome:
     
     def RepeatsofLengthL(self, length = 100):
         self.ReadLength_Considered = length
-        self.RepeatsHashDictionary = dict()
         self.DNA_current = self.DNAList[0]
         print(len(self.DNA_current))
       #  a = input("FFF")
