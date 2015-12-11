@@ -44,9 +44,9 @@ class Genome:
             Answer = self.RepeatsofLengthL(length)
             print("Answer", Answer)
             Summary += [ Answer ]
-            if Answer[-3] < 1:
+            if Answer[-3] < 2:
                 break
-        CommonFunctions.WriteArrayinFile(Summary, "Precise2_Summary_"+self.Filename[:-6]+".csv")
+        CommonFunctions.WriteArrayinFile(Summary, "Precise2S_Summary_"+self.Filename[:-6]+".csv")
 #   
     
 
@@ -135,7 +135,7 @@ class Genome:
 
 filename = "RhodobacterSphaeroides.fasta"
 filename = "Buchnera_aphidicola.fasta"
-#filename = "StaphylococcusAureus.fasta"
+filename = "StaphylococcusAureus.fasta"
 Gene = Genome(filename, 1)
 Gene.getUncertainty()
 
