@@ -12,6 +12,9 @@ class Genome:
     Filename    = ""
     SideLengths = 1
     Gap         = 1
+    """
+        Basic Initializations
+    """
     def __init__(self, Filename, Gap):
         self.Gap = Gap
         self.Filename = Filename
