@@ -26,6 +26,7 @@ class Genome:
     
     
     def getUncertainty(self):
+        #Stores final data
         Summary = []
         length = 80
         while True:
