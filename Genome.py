@@ -59,7 +59,6 @@ class Genome:
         # Sort w.r.t to the reads. (aggrerate them)
         Reads = sorted(Reads,key=itemgetter(1) )
         Answer = 0
-        
         #print("Counting Repeats")
         CurrentString = Reads[0][1]
         LeftNeighbhors = []
@@ -75,13 +74,16 @@ class Genome:
                 """
                    Count only when both right and left neighbhours are not the same
                 """
-                if Repeat > 1 and len( set(RightNeighbors) ) != 1 and len( set(LeftNeighbhors) ) != 1:
+#                 if Repeat > 1:
+#                     print(LeftNeighbhors)
+#                     enter = input("FUCK")
+                if Repeat >1 and len( set(RightNeighbors) ) != 1 and len( set(LeftNeighbhors) ) != 1:
                     Answer += 1
             
-            LeftNeighbhors = []
-            RightNeighbors = []
-            Repeat = 1        
-            CurrentString = read[1]
+                LeftNeighbhors = []
+                RightNeighbors = []
+                Repeat = 1        
+                CurrentString = read[1]
 
 #         #Counting  
 #         print("Counting")
@@ -228,7 +230,4 @@ Gene = Genome(filename, 1)
 # Gene.getUncertainty()
 Gene.getReadLengthGraph()
 
-
-#RhodobacterSphaeroides = Genome("RhodobacterSphaeroides.fasta", 3)
-#RhodobacterSphaeroides.getUncertainty()
 
