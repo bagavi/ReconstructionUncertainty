@@ -24,21 +24,6 @@ class Genome:
             self.DNAList.append(str(seq_record.seq))
         print( "Length of the DNA is", len(self.DNAList[0]))
     
-    
-    def getUncertainty(self):
-        #Stores final data
-        Summary = []
-        length = 80
-        while True:
-            length += self.Gap
-            Answer = self.RepeatsofLengthL(length)
-            print("Answer", Answer)
-            Summary += [ Answer ]
-            if Answer[-3] < 1:
-                break
-        CommonFunctions.WriteArrayinFile(Summary, "New_Summary_"+self.Filename[:-6]+".csv")
-#   
-    
     """
         Implements log(n!)
     """
@@ -48,15 +33,87 @@ class Genome:
         else:
             return( n*(math.log(n,2) - 1.44269) + 0.5*math.log(2*math.pi*n)) #math.log(math.e,2) = 1.4426950408889634
     
+    def getReadLengthGraph(self):
+     #Stores final data
+        Summary = []
+        for length in range(50,400):
+            length += self.Gap
+            Answer = self.NumberofRepeatsofLengthL(length)  
+            print("Length", length, "Answer", Answer)
+            Summary += [ [ length, Answer] ]
+        CommonFunctions.WriteArrayinFile(Summary, "New_Summary_"+self.Filename[:-6]+".csv")
+           
+    def NumberofRepeatsofLengthL(self, length):
+        self.DNA_current = self.DNAList[0]
+        #print("DNA Length", len(self.DNA_current))
+        Reads = []
+        for position in range(self.SideLengths, len(self.DNA_current) - self.ReadLength_Considered - self.SideLengths ):
+            Reads +=[   
+                        [ 
+                         self.DNA_current[position - 1: position] , #Left Neighbhour
+                         self.DNA_current[position: position + length] ,
+                         self.DNA_current[position + length : position + length + 1]#Right Neigbhour
+                        ]
+                    ]
+        #print("Sorting Read Array")
+        # Sort w.r.t to the reads. (aggrerate them)
+        Reads = sorted(Reads,key=itemgetter(1) )
+        Answer = 0
+        
+        #print("Counting Repeats")
+        CurrentString = Reads[0][1]
+        LeftNeighbhors = []
+        RightNeighbors = []
+        Repeat = 1
+
+        for read in Reads[1:]:
+            if read[1] == CurrentString:
+                Repeat += 1
+                LeftNeighbhors  +=   read[0]
+                RightNeighbors  +=   read[2]
+            else:
+                """
+                   Count only when both right and left neighbhours are not the same
+                """
+                if Repeat > 1 and len( set(RightNeighbors) ) != 1 and len( set(LeftNeighbhors) ) != 1:
+                    Answer += 1
+            
+            LeftNeighbhors = []
+            RightNeighbors = []
+            Repeat = 1        
+            CurrentString = read[1]
+
+#         #Counting  
+#         print("Counting")
+#         ReadCounter = Counter(Reads).values()
+#         Ans = 0
+#         for i in ReadCounter:
+#             if i > 1:
+#                 Ans += i
+        return(Answer)
+
+    def getUncertainty(self):
+        #Stores final data
+        Summary = []
+        length = 10
+        while True:
+            length += self.Gap
+            Answer = self.RepeatsofLengthL(length)  
+            #print("Answer", Answer)
+            Summary += [ Answer ]
+            if Answer[-4] < 1:
+                break
+        CommonFunctions.WriteArrayinFile(Summary, "New_Summary_"+self.Filename[:-6]+".csv")
+   
     def RepeatsofLengthL(self, length = 100):
         self.ReadLength_Considered = length
         self.DNA_current = self.DNAList[0]
-        print("DNA Length", len(self.DNA_current))
+        #print("DNA Length", len(self.DNA_current))
         Reads = []
-        print("Read Length", length)
+        #print("Read Length", length)
         for position in range(self.SideLengths, len(self.DNA_current) - self.ReadLength_Considered - self.SideLengths ):
-            if position % 1000000 == 0:
-                print("In position", position, "DNA left", len(self.DNA_current) - position )           
+         #   if position % 1000000 == 0:
+         #       print("In position", position, "DNA left", len(self.DNA_current) - position )           
             Reads +=[   
                         [ 
                          self.DNA_current[position - self.SideLengths:                             position] , #Left Neighbhour
@@ -65,18 +122,17 @@ class Genome:
                          position
                         ]
                     ]
-        print("Sorting Read Array")
+        #print("Sorting Read Array")
         # Sort w.r.t to the reads. (aggrerate them)
         Reads = sorted(Reads,key=itemgetter(1) )
-        CountInfo = []
-        ReadInfo = []
+        UpperboundUncertainty = []
+        UncertaintyGap = []
         
-        Titles = [ "Gene", "Gene Length", "Read Length", "Read", "Neighbhours", "Repeat"]
         Is_less_than_critical_length = False
         Reason = "No reason"
         Position_of_repeat_less_than_2 = []
         
-        print("Counting Repeats")
+        #print("Counting Repeats")
         CurrentString = Reads[0][1]
         Repeat = 0
         LeftNeighbhors = []
@@ -96,8 +152,7 @@ class Genome:
                     then the node represented by this read will *not* get condensed and this node will add to the uncertainty
                 """
                 if Repeat > 1 and len( set(RightNeighbors) ) != 1:
- #                   print(RepeatPositions)
-
+                    
                     #Checking for l_critical
                     if Repeat > 2:
                         # If repeat >=3, then the given read length is definitely less than L_critical.
@@ -136,9 +191,11 @@ class Genome:
                     Uncertainty = self.factlog(sum(Count_stats))
                     for i in Count_stats:
                         Uncertainty -= self.factlog(i)
+                    Gap = math.log(sum(Count_stats)/min(Count_stats),2)
+                    print( Count_stats, sum(Count_stats), min(Count_stats), Gap, Uncertainty)
 
-                    CountInfo += [ Uncertainty ]
-                
+                    UpperboundUncertainty += [ Uncertainty ]
+                    UncertaintyGap += [ Gap ]
                 """
                     Re-initialization.
                 """
@@ -153,20 +210,23 @@ class Genome:
            # print( Position_of_repeat_less_than_2, sorted(Position_of_repeat_less_than_2))
             Reason = "Interleaved Repeats"
             Is_less_than_critical_length = True
-
-        Summary = [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo), Is_less_than_critical_length, str(datetime.datetime.now()) ]
+            
+        Summary = [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(UpperboundUncertainty), sum(UpperboundUncertainty), sum(UpperboundUncertainty) - sum(UncertaintyGap) ,Is_less_than_critical_length, str(datetime.datetime.now()) ]
+        print( "ReadLength :", self.ReadLength_Considered, "Upperbound", sum(UpperboundUncertainty), "Lower Bound", sum(UpperboundUncertainty) - sum(UncertaintyGap))
         if False:
             print("Length of the DNA is", len(self.DNA_current))
-            print("Number of reads repeating of length", self.ReadLength_Considered," is", len(CountInfo))
+            print("Number of reads repeating of length", self.ReadLength_Considered," is", len(UpperboundUncertainty))
             print("Time", datetime.datetime.now())
-        print("Uncertainity", sum(CountInfo), "Is less than critical length", Is_less_than_critical_length, "reason", Reason)
+        #print("Uncertainity", sum(UpperboundUncertainty), "Is less than critical length", Is_less_than_critical_length, "reason", Reason)
         return(Summary)
 
+
 filename = "RhodobacterSphaeroides.fasta"
-filename = "Buchnera_aphidicola.fasta"
+#filename = "Buchnera_aphidicola.fasta"
 filename = "StaphylococcusAureus.fasta"
 Gene = Genome(filename, 1)
-Gene.getUncertainty()
+# Gene.getUncertainty()
+Gene.getReadLengthGraph()
 
 
 #RhodobacterSphaeroides = Genome("RhodobacterSphaeroides.fasta", 3)
