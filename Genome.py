@@ -28,13 +28,13 @@ class Genome:
     def getUncertainty(self):
         #Stores final data
         Summary = []
-        length = 80
+        length = 10
         while True:
             length += self.Gap
             Answer = self.RepeatsofLengthL(length)
-            print("Answer", Answer)
+            #print("Answer", Answer)
             Summary += [ Answer ]
-            if Answer[-3] < 1:
+            if Answer[-4] < 1:
                 break
         CommonFunctions.WriteArrayinFile(Summary, "New_Summary_"+self.Filename[:-6]+".csv")
 #   
@@ -51,12 +51,12 @@ class Genome:
     def RepeatsofLengthL(self, length = 100):
         self.ReadLength_Considered = length
         self.DNA_current = self.DNAList[0]
-        print("DNA Length", len(self.DNA_current))
+        #print("DNA Length", len(self.DNA_current))
         Reads = []
-        print("Read Length", length)
+        #print("Read Length", length)
         for position in range(self.SideLengths, len(self.DNA_current) - self.ReadLength_Considered - self.SideLengths ):
-            if position % 1000000 == 0:
-                print("In position", position, "DNA left", len(self.DNA_current) - position )           
+         #   if position % 1000000 == 0:
+         #       print("In position", position, "DNA left", len(self.DNA_current) - position )           
             Reads +=[   
                         [ 
                          self.DNA_current[position - self.SideLengths:                             position] , #Left Neighbhour
@@ -65,18 +65,17 @@ class Genome:
                          position
                         ]
                     ]
-        print("Sorting Read Array")
+        #print("Sorting Read Array")
         # Sort w.r.t to the reads. (aggrerate them)
         Reads = sorted(Reads,key=itemgetter(1) )
-        CountInfo = []
-        ReadInfo = []
+        UpperboundUncertainty = []
+        UncertaintyGap = []
         
-        Titles = [ "Gene", "Gene Length", "Read Length", "Read", "Neighbhours", "Repeat"]
         Is_less_than_critical_length = False
         Reason = "No reason"
         Position_of_repeat_less_than_2 = []
         
-        print("Counting Repeats")
+        #print("Counting Repeats")
         CurrentString = Reads[0][1]
         Repeat = 0
         LeftNeighbhors = []
@@ -96,8 +95,7 @@ class Genome:
                     then the node represented by this read will *not* get condensed and this node will add to the uncertainty
                 """
                 if Repeat > 1 and len( set(RightNeighbors) ) != 1:
- #                   print(RepeatPositions)
-
+                    
                     #Checking for l_critical
                     if Repeat > 2:
                         # If repeat >=3, then the given read length is definitely less than L_critical.
@@ -136,9 +134,11 @@ class Genome:
                     Uncertainty = self.factlog(sum(Count_stats))
                     for i in Count_stats:
                         Uncertainty -= self.factlog(i)
+                    Gap = math.log(sum(Count_stats)/min(Count_stats),2)
+                    print( Count_stats, sum(Count_stats), min(Count_stats), Gap, Uncertainty)
 
-                    CountInfo += [ Uncertainty ]
-                
+                    UpperboundUncertainty += [ Uncertainty ]
+                    UncertaintyGap += [ Gap ]
                 """
                     Re-initialization.
                 """
@@ -153,17 +153,18 @@ class Genome:
            # print( Position_of_repeat_less_than_2, sorted(Position_of_repeat_less_than_2))
             Reason = "Interleaved Repeats"
             Is_less_than_critical_length = True
-
-        Summary = [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(CountInfo), sum(CountInfo), Is_less_than_critical_length, str(datetime.datetime.now()) ]
+            
+        Summary = [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(UpperboundUncertainty), sum(UpperboundUncertainty), sum(UpperboundUncertainty) - sum(UncertaintyGap) ,Is_less_than_critical_length, str(datetime.datetime.now()) ]
+        print( "ReadLength :", self.ReadLength_Considered, "Upperbound", sum(UpperboundUncertainty), "Lower Bound", sum(UpperboundUncertainty) - sum(UncertaintyGap))
         if False:
             print("Length of the DNA is", len(self.DNA_current))
-            print("Number of reads repeating of length", self.ReadLength_Considered," is", len(CountInfo))
+            print("Number of reads repeating of length", self.ReadLength_Considered," is", len(UpperboundUncertainty))
             print("Time", datetime.datetime.now())
-        print("Uncertainity", sum(CountInfo), "Is less than critical length", Is_less_than_critical_length, "reason", Reason)
+        #print("Uncertainity", sum(UpperboundUncertainty), "Is less than critical length", Is_less_than_critical_length, "reason", Reason)
         return(Summary)
 
 filename = "RhodobacterSphaeroides.fasta"
-filename = "Buchnera_aphidicola.fasta"
+#filename = "Buchnera_aphidicola.fasta"
 filename = "StaphylococcusAureus.fasta"
 Gene = Genome(filename, 1)
 Gene.getUncertainty()
