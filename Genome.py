@@ -5,6 +5,7 @@ import CommonFunctions
 from CommonFunctions import WriteArrayinFile
 from operator import itemgetter
 from collections import Counter
+from doctest import Example
 
 class Genome:
     DNAList= []
@@ -36,9 +37,11 @@ class Genome:
     def getReadLengthGraph(self):
      #Stores final data
         Summary = []
-        for length in range(0,400):
+        for length in range(20,400):
             length += self.Gap
-            Answer = self.NumberofRepeatsofLengthL(length)  
+            Answer = self.NumberofRepeatsofLengthL(length) 
+            if False == Answer[-1]:
+                break  
             print("Length", length, "Answer", Answer)
             Summary += [ [ length, Answer] ]
         CommonFunctions.WriteArrayinFile(Summary, "Read_lengths"+self.Filename[:-6]+".csv")
@@ -52,7 +55,8 @@ class Genome:
                         [ 
                          self.DNA_current[position - 1: position] , #Left Neighbhour
                          self.DNA_current[position: position + length] ,
-                         self.DNA_current[position + length : position + length + 1]#Right Neigbhour
+                         self.DNA_current[position + length : position + length + 1],#Right Neigbhour
+                         position
                         ]
                     ]
         #print("Sorting Read Array")
@@ -64,16 +68,21 @@ class Genome:
         CurrentString = Reads[0][1]
         Neighbhors = []
         Repeat = 1
-
+        Continue = False
+        Example = ["none"]
+        Positions = []
         for read in Reads[1:]:
             if read[1] == CurrentString:
                 Repeat += 1
                 Neighbhors += [ (read[0], read[2]) ]
+                Positions += [read[3]]
             else:
                 """
                    Count only when both right and left neigbhors are not the same
                 """
                 if Repeat > 1:
+                    Continue = True
+                    Example = [ CurrentString, Positions]
                     Is_Maximal = False
                     Neighbhors = list( set(Neighbhors) )
                     for i in range(1,len(Neighbhors)):
@@ -90,9 +99,9 @@ class Genome:
                             
                 Repeat = 1        
                 CurrentString = read[1]
-                Neighbhors = []
-                
-        return( [ No_of_maximal_reads, No_of_occurences_of_maximal_reads ])
+                Neighbhors = [ (read[0], read[2]) ]
+                Positions = [read[3]]
+        return( [ No_of_maximal_reads, No_of_occurences_of_maximal_reads, Continue,Example ])
 
     def getUncertainty(self):
         #Stores final data
