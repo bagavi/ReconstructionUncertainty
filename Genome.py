@@ -237,7 +237,7 @@ filename = "RhodobacterSphaeroides.fasta"
 filename = "StaphylococcusAureus.fasta"
 filename = "Lactobacillus acidophilus.fasta"
 Gene = Genome(filename, 1)
-Gene.getUncertainty()
-#Gene.getReadLengthGraph()
+#Gene.getUncertainty()
+Gene.getReadLengthGraph()
 
 
