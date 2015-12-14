@@ -37,7 +37,7 @@ class Genome:
     def getReadLengthGraph(self):
      #Stores final data
         Summary = []
-        for length in range(22,400):
+        for length in range(1,400):
             length += self.Gap
             Answer = self.NumberofRepeatsofLengthL(length) 
             if False == Answer[3]:
@@ -233,10 +233,10 @@ class Genome:
 
 
 filename = "RhodobacterSphaeroides.fasta"
-filename = "Buchnera_aphidicola.fasta"
+#filename = "Buchnera_aphidicola.fasta"
 filename = "StaphylococcusAureus.fasta"
 Gene = Genome(filename, 1)
-Gene.getUncertainty()
-#Gene.getReadLengthGraph()
+#Gene.getUncertainty()
+Gene.getReadLengthGraph()
 
 
