@@ -36,7 +36,7 @@ class Genome:
     def getReadLengthGraph(self):
      #Stores final data
         Summary = []
-        for length in range(50,400):
+        for length in range(0,400):
             length += self.Gap
             Answer = self.NumberofRepeatsofLengthL(length)  
             print("Length", length, "Answer", Answer)
@@ -58,41 +58,38 @@ class Genome:
         #print("Sorting Read Array")
         # Sort w.r.t to the reads. (aggrerate them)
         Reads = sorted(Reads,key=itemgetter(1) )
-        Answer = 0
+        No_of_maximal_reads = 0
+        No_of_occurences_of_maximal_reads = 0
         #print("Counting Repeats")
         CurrentString = Reads[0][1]
-        LeftNeighbhors = []
-        RightNeighbors = []
+        Neighbhors = []
         Repeat = 1
 
         for read in Reads[1:]:
             if read[1] == CurrentString:
                 Repeat += 1
-                LeftNeighbhors  +=   read[0]
-                RightNeighbors  +=   read[2]
+                Neighbhors += [ [read[0], read[2]] ]
             else:
                 """
-                   Count only when both right and left neighbhours are not the same
+                   Count only when both right and left neigbhors are not the same
                 """
-#                 if Repeat > 1:
-#                     print(LeftNeighbhors)
-#                     enter = input("FUCK")
-                if Repeat >1 and len( set(RightNeighbors) ) != 1 and len( set(LeftNeighbhors) ) != 1:
-                    Answer += 1
-            
-                LeftNeighbhors = []
-                RightNeighbors = []
+                if Repeat > 1:
+                    Is_Maximal = False
+                    for i in range(len(Neighbhors)):
+                        for j in range(i):
+                            if( i[0] != j[0] and i[1] != j[1] ): #Implies that the given read is maximal
+                                Is_Maximal = True
+                                break
+                    
+                    if Is_Maximal:
+                        No_of_maximal_reads += 1
+                        No_of_occurences_of_maximal_reads += Repeat
+                            
                 Repeat = 1        
                 CurrentString = read[1]
-
-#         #Counting  
-#         print("Counting")
-#         ReadCounter = Counter(Reads).values()
-#         Ans = 0
-#         for i in ReadCounter:
-#             if i > 1:
-#                 Ans += i
-        return(Answer)
+                Neighbhors = []
+                
+        return( [ No_of_maximal_reads, No_of_occurences_of_maximal_reads ])
 
     def getUncertainty(self):
         #Stores final data
@@ -224,8 +221,8 @@ class Genome:
 
 
 filename = "RhodobacterSphaeroides.fasta"
-#filename = "Buchnera_aphidicola.fasta"
-filename = "StaphylococcusAureus.fasta"
+filename = "Buchnera_aphidicola.fasta"
+#filename = "StaphylococcusAureus.fasta"
 Gene = Genome(filename, 1)
 # Gene.getUncertainty()
 Gene.getReadLengthGraph()
