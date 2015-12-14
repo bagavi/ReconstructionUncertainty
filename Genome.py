@@ -37,14 +37,14 @@ class Genome:
     def getReadLengthGraph(self):
      #Stores final data
         Summary = []
-        for length in range(1,400):
+        for length in range(400,40000):
             length += self.Gap
             Answer = self.NumberofRepeatsofLengthL(length) 
             if False == Answer[3]:
                 break  
             print("Length", length, "Answer", Answer)
             Summary += [ Answer ]
-        CommonFunctions.WriteArrayinFile(Summary, "Read_lengths"+self.Filename[:-6]+".csv")
+        CommonFunctions.WriteArrayinFile(Summary, "2Read_lengths"+self.Filename[:-6]+".csv")
            
     def NumberofRepeatsofLengthL(self, length):
         self.DNA_current = self.DNAList[0]
@@ -214,7 +214,7 @@ class Genome:
                 RightNeighbors  =   read[2]
                 RepeatPositions = [ read[3] ]
                 Repeat = 1
-            
+
                 CurrentString = read[1]
         
         if sorted(Position_of_repeat_less_than_2, key = itemgetter(0)) != sorted(Position_of_repeat_less_than_2, key = itemgetter(1)):
