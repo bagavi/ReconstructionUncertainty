@@ -41,7 +41,7 @@ class Genome:
             Answer = self.NumberofRepeatsofLengthL(length)  
             print("Length", length, "Answer", Answer)
             Summary += [ [ length, Answer] ]
-        CommonFunctions.WriteArrayinFile(Summary, "New_Summary_"+self.Filename[:-6]+".csv")
+        CommonFunctions.WriteArrayinFile(Summary, "Read_lengths"+self.Filename[:-6]+".csv")
            
     def NumberofRepeatsofLengthL(self, length):
         self.DNA_current = self.DNAList[0]
