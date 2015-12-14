@@ -37,7 +37,7 @@ class Genome:
     def getReadLengthGraph(self):
      #Stores final data
         Summary = []
-        for length in range(20,400):
+        for length in range(1,400):
             length += self.Gap
             Answer = self.NumberofRepeatsofLengthL(length) 
             if False == Answer[2]:
