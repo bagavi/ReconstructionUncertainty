@@ -106,7 +106,7 @@ class Genome:
     def getUncertainty(self):
         #Stores final data
         Summary = []
-        length = 10
+        length = 1
         while True:
             length += self.Gap
             Answer = self.RepeatsofLengthL(length)  
@@ -171,7 +171,7 @@ class Genome:
                         Reason = "Triple Repeats"
                     else:
                         # We accumulate all the reads with length = 2 and check if they interleave.
-                        Position_of_repeat_less_than_2 += [ RepeatPositions + read[1] ]
+                        Position_of_repeat_less_than_2 += [ RepeatPositions]
                     
                     # We count the number of times each neighbhour is repeats
                     """
@@ -203,16 +203,16 @@ class Genome:
                     for i in Count_stats:
                         Uncertainty -= self.factlog(i)
                     Gap = math.log(sum(Count_stats)/min(Count_stats),2)
-                    print( Count_stats, sum(Count_stats), min(Count_stats), Gap, Uncertainty)
 
                     UpperboundUncertainty += [ Uncertainty ]
                     UncertaintyGap += [ Gap ]
                 """
                     Re-initialization.
                 """
-                LeftNeighbhors = []
-                RightNeighbors = []
-                RepeatPositions = []
+                
+                LeftNeighbhors  =   read[0]
+                RightNeighbors  =   read[2]
+                RepeatPositions = [ read[3] ]
                 Repeat = 1
             
                 CurrentString = read[1]
@@ -222,7 +222,7 @@ class Genome:
             Reason = "Interleaved Repeats"
             Is_less_than_critical_length = True
             
-        Summary = [ self.Filename, len(self.DNA_current), self.ReadLength_Considered, len(UpperboundUncertainty), sum(UpperboundUncertainty), sum(UpperboundUncertainty) - sum(UncertaintyGap) ,Is_less_than_critical_length, str(datetime.datetime.now()) ]
+        Summary = [ self.ReadLength_Considered, sum(UpperboundUncertainty), sum(UpperboundUncertainty) - sum(UncertaintyGap) ,Is_less_than_critical_length, str(datetime.datetime.now()) ]
         print( "ReadLength :", self.ReadLength_Considered, "Upperbound", sum(UpperboundUncertainty), "Lower Bound", sum(UpperboundUncertainty) - sum(UncertaintyGap))
         if False:
             print("Length of the DNA is", len(self.DNA_current))
@@ -234,9 +234,9 @@ class Genome:
 
 filename = "RhodobacterSphaeroides.fasta"
 filename = "Buchnera_aphidicola.fasta"
-#filename = "StaphylococcusAureus.fasta"
+filename = "StaphylococcusAureus.fasta"
 Gene = Genome(filename, 1)
-# Gene.getUncertainty()
-Gene.getReadLengthGraph()
+Gene.getUncertainty()
+#Gene.getReadLengthGraph()
 
 
