@@ -68,19 +68,22 @@ class Genome:
         for read in Reads[1:]:
             if read[1] == CurrentString:
                 Repeat += 1
-                Neighbhors += [ [read[0], read[2]] ]
+                Neighbhors += [ (read[0], read[2]) ]
             else:
                 """
                    Count only when both right and left neigbhors are not the same
                 """
                 if Repeat > 1:
                     Is_Maximal = False
-                    for i in range(len(Neighbhors)):
+                    Neighbhors = list( set(Neighbhors) )
+                    for i in range(1,len(Neighbhors)):
                         for j in range(i):
-                            if( i[0] != j[0] and i[1] != j[1] ): #Implies that the given read is maximal
+                            if( Neighbhors[i][0] != Neighbhors[j][0] and Neighbhors[i][1] != Neighbhors[j][1] ): #Implies that the given read is maximal
                                 Is_Maximal = True
                                 break
-                    
+                        else:
+                            continue
+                        break
                     if Is_Maximal:
                         No_of_maximal_reads += 1
                         No_of_occurences_of_maximal_reads += Repeat
