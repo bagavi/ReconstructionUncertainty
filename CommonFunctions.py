@@ -78,8 +78,6 @@ def FiletoArray( Filename = 'Results_posix.csv' , Int=False, Offset = 0):
                     pass
         else:
             for i in reader:
-                i = numpy.array(i)
-                i.flatten()
                 if Offset != 0:
                     Array += [ i[:Offset] ]
                 else:
