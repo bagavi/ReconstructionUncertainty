@@ -63,7 +63,7 @@ def ReWriteArrayinFile( Array, Filename ):
     
     WriteArrayinFile(CombinedData, Filename)
     
-def FiletoArray( Filename = 'Results_posix.csv' , Int=False):
+def FiletoArray( Filename = 'Results_posix.csv' , Int=False, Offset = 0):
     Array = []
     with open(Filename, 'r') as f:
         reader = csv.reader(f)
@@ -78,8 +78,12 @@ def FiletoArray( Filename = 'Results_posix.csv' , Int=False):
                     pass
         else:
             for i in reader:
-                Array += [ i ]
-        
+                i = numpy.array(i)
+                i.flatten()
+                if Offset != 0:
+                    Array += [ i[:Offset] ]
+                else:
+                    Array += [ i ]
     return(Array[1:])
 
 def groupContexts( Dictionary, Alphabet ):
