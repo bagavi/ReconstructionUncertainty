@@ -40,10 +40,10 @@ class Genome:
         for length in range(20,400):
             length += self.Gap
             Answer = self.NumberofRepeatsofLengthL(length) 
-            if False == Answer[-1]:
+            if False == Answer[2]:
                 break  
             print("Length", length, "Answer", Answer)
-            Summary += [ [ length, Answer] ]
+            Summary += [ Answer ]
         CommonFunctions.WriteArrayinFile(Summary, "Read_lengths"+self.Filename[:-6]+".csv")
            
     def NumberofRepeatsofLengthL(self, length):
@@ -75,14 +75,14 @@ class Genome:
             if read[1] == CurrentString:
                 Repeat += 1
                 Neighbhors += [ (read[0], read[2]) ]
-                Positions += [read[3]]
+                Positions += [ read[3] ]
             else:
                 """
                    Count only when both right and left neigbhors are not the same
                 """
                 if Repeat > 1:
                     Continue = True
-                    Example = [ CurrentString, Positions]
+                    Example = [ CurrentString]
                     Is_Maximal = False
                     Neighbhors = list( set(Neighbhors) )
                     for i in range(1,len(Neighbhors)):
@@ -100,8 +100,8 @@ class Genome:
                 Repeat = 1        
                 CurrentString = read[1]
                 Neighbhors = [ (read[0], read[2]) ]
-                Positions = [read[3]]
-        return( [ No_of_maximal_reads, No_of_occurences_of_maximal_reads, Continue,Example ])
+                Positions = [ read[3] ]
+        return( [ length, No_of_maximal_reads, No_of_occurences_of_maximal_reads, Continue,Example ])
 
     def getUncertainty(self):
         #Stores final data
