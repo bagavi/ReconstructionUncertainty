@@ -5,7 +5,6 @@ import CommonFunctions
 from CommonFunctions import WriteArrayinFile
 from operator import itemgetter
 from collections import Counter
-from doctest import Example
 
 class Genome:
     DNAList= []
