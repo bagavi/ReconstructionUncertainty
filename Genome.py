@@ -148,6 +148,11 @@ class Genome:
         #Stores final data
         Summary = []
         length = 1
+        Start_length = 0
+        self.DNA_current = self.DNAList[0]
+
+        self.RepeatPositions = range(self.SideLengths, len(self.DNA_current) - Start_length - self.SideLengths )
+
         while True:
             length += self.Gap
             Answer = self.RepeatsofLengthL(length)  
@@ -159,11 +164,11 @@ class Genome:
    
     def RepeatsofLengthL(self, length = 100):
         self.ReadLength_Considered = length
-        self.DNA_current = self.DNAList[0]
+        Repeat_Positions = []
         #print("DNA Length", len(self.DNA_current))
         Reads = []
         #print("Read Length", length)
-        for position in range(self.SideLengths, len(self.DNA_current) - self.ReadLength_Considered - self.SideLengths ):
+        for position in self.RepeatPositions:
          #   if position % 1000000 == 0:
          #       print("In position", position, "DNA left", len(self.DNA_current) - position )           
             Reads +=[   
@@ -187,9 +192,9 @@ class Genome:
         #print("Counting Repeats")
         CurrentString = Reads[0][1]
         Repeat = 0
-        LeftNeighbhors = []
-        RightNeighbors = []
-        RepeatPositions = []
+        LeftNeighbhors = [Reads[0][0]]
+        RightNeighbors = [Reads[0][2]]
+        RepeatPositions = [Reads[0][3]]
         Repeat = 1
 
         for read in Reads[1:]:
@@ -199,6 +204,9 @@ class Genome:
                 RightNeighbors  +=   read[2]
                 RepeatPositions += [ read[3] ]
             else:
+                if Repeat > 1:
+                    Repeat_Positions += RepeatPositions #Adding Repeat Positions
+
                 """
                     If the read repeats more than one time and if the right neighbours are unique, 
                     then the node represented by this read will *not* get condensed and this node will add to the uncertainty
@@ -257,6 +265,31 @@ class Genome:
                 Repeat = 1
 
                 CurrentString = read[1]
+        ####################################################################################
+        #Repeat for last read
+        if Repeat > 1:
+            Repeat_Positions += RepeatPositions
+        if Repeat > 1 and len( set(RightNeighbors) ) != 1:
+            
+            #Checking for l_critical
+            if Repeat > 2:
+                # If repeat >=3, then the given read length is definitely less than L_critical.
+                Is_less_than_critical_length = True
+                Reason = "Triple Repeats"
+            else:
+                # We accumulate all the reads with length = 2 and check if they interleave.
+                Position_of_repeat_less_than_2 += [ RepeatPositions]
+
+            Count_stats = Counter(RightNeighbors).values()
+            
+            Uncertainty = self.factlog(sum(Count_stats))
+            for i in Count_stats:
+                Uncertainty -= self.factlog(i)
+            Gap = math.log(sum(Count_stats)/min(Count_stats),2)
+
+            UpperboundUncertainty += [ Uncertainty ]
+            UncertaintyGap += [ Gap ]        
+        ######################################################################################
         
         if sorted(Position_of_repeat_less_than_2, key = itemgetter(0)) != sorted(Position_of_repeat_less_than_2, key = itemgetter(1)):
            # print( Position_of_repeat_less_than_2, sorted(Position_of_repeat_less_than_2))
@@ -270,6 +303,10 @@ class Genome:
             print("Number of reads repeating of length", self.ReadLength_Considered," is", len(UpperboundUncertainty))
             print("Time", datetime.datetime.now())
         #print("Uncertainity", sum(UpperboundUncertainty), "Is less than critical length", Is_less_than_critical_length, "reason", Reason)
+        
+        Repeat_Positions = list(set(Repeat_Positions))
+        self.RepeatPositions = list(set(Repeat_Positions)) #Updating Repeat Positions
+        
         return(Summary)
 
 
