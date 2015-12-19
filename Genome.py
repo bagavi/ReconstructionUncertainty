@@ -275,7 +275,7 @@ class Genome:
 
 filename = ["RhodobacterSphaeroides.fasta", "Buchnera_aphidicola.fasta", "StaphylococcusAureus.fasta", "Lactobacillus acidophilus.fasta" ]
 Gene = Genome(filename[0], 1)
-#Gene.getUncertainty()
-Gene.getReadLengthGraph()
+Gene.getUncertainty()
+#Gene.getReadLengthGraph()
 
 
