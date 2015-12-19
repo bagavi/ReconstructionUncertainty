@@ -13,6 +13,7 @@ class Genome:
     Filename    = ""
     SideLengths = 1
     Gap         = 1
+    RepeatPositions = []
     """
         Basic Initialization
     """
@@ -36,7 +37,11 @@ class Genome:
     def getReadLengthGraph(self):
      #Stores final data
         Summary = []
-        for length in range(400,40000):
+        self.DNA_current = self.DNAList[0]
+        Start_length = 0
+        End_length = 40000
+        self.RepeatPositions = range(self.SideLengths, len(self.DNA_current) - Start_length - self.SideLengths )
+        for length in range(Start_length,End_length):
             length += self.Gap
             Answer = self.NumberofRepeatsofLengthL(length) 
             if False == Answer[3]:
@@ -46,10 +51,10 @@ class Genome:
         CommonFunctions.WriteArrayinFile(Summary, "2Read_lengths"+self.Filename[:-6]+".csv")
            
     def NumberofRepeatsofLengthL(self, length):
-        self.DNA_current = self.DNAList[0]
         #print("DNA Length", len(self.DNA_current))
         Reads = []
-        for position in range(self.SideLengths, len(self.DNA_current) - self.ReadLength_Considered - self.SideLengths ):
+        Repeat_Positions = []
+        for position in self.RepeatPositions:
             Reads +=[   
                         [ 
                          self.DNA_current[position - 1: position] , #Left Neighbhour
@@ -65,11 +70,11 @@ class Genome:
         No_of_occurences_of_maximal_reads = 0
         #print("Counting Repeats")
         CurrentString = Reads[0][1]
-        Neighbhors = []
+        Neighbhors = [ (Reads[0][0], Reads[0][2]) ]
         Repeat = 1
         Continue = False
         Example = ["none"]
-        Positions = []
+        Positions = [ Reads[0][3]]
         for read in Reads[1:]:
             if read[1] == CurrentString:
                 Repeat += 1
@@ -78,8 +83,13 @@ class Genome:
             else:
                 """
                    Count only when both right and left neigbhors are not the same
+
                 """
+                
                 if Repeat > 1:
+#                     print("Repeated", CurrentString, Positions[:100])
+                    Repeat_Positions += Positions #Adding Repeat Positions
+
                     Continue = True
                     Example = [ CurrentString]
                     Is_Maximal = False
@@ -89,17 +99,49 @@ class Genome:
                             if( Neighbhors[i][0] != Neighbhors[j][0] and Neighbhors[i][1] != Neighbhors[j][1] ): #Implies that the given read is maximal
                                 Is_Maximal = True
                                 break
+                       
                         else:
                             continue
                         break
                     if Is_Maximal:
                         No_of_maximal_reads += 1
                         No_of_occurences_of_maximal_reads += Repeat
-                            
+#                 else:
+#                     print("didnt repeat", CurrentString)           
                 Repeat = 1        
                 CurrentString = read[1]
                 Neighbhors = [ (read[0], read[2]) ]
                 Positions = [ read[3] ]
+        
+        """
+        Last step after exiting the loop
+        """
+        if Repeat > 1:
+#                     print("Repeated", CurrentString, Positions[:100])
+            Repeat_Positions += Positions #Adding Repeat Positions
+
+            Continue = True
+            Example = [ CurrentString]
+            Is_Maximal = False
+            Neighbhors = list( set(Neighbhors) )
+            for i in range(1,len(Neighbhors)):
+                for j in range(i):
+                    if( Neighbhors[i][0] != Neighbhors[j][0] and Neighbhors[i][1] != Neighbhors[j][1] ): #Implies that the given read is maximal
+                        Is_Maximal = True
+                        break
+               
+                else:
+                    continue
+                break
+            if Is_Maximal:
+                No_of_maximal_reads += 1
+                No_of_occurences_of_maximal_reads += Repeat
+        
+        """
+        Last step done
+        """
+        Repeat_Positions = list(set(Repeat_Positions))
+        self.RepeatPositions = list(set(Repeat_Positions)) #Updating Repeat Positions
         return( [ length, No_of_maximal_reads, No_of_occurences_of_maximal_reads, Continue,Example ])
 
     def getUncertainty(self):
@@ -232,9 +274,9 @@ class Genome:
 
 
 filename = "RhodobacterSphaeroides.fasta"
-#filename = "Buchnera_aphidicola.fasta"
-filename = "StaphylococcusAureus.fasta"
-filename = "Lactobacillus acidophilus.fasta"
+filename = "Buchnera_aphidicola.fasta"
+#filename = "StaphylococcusAureus.fasta"
+#filename = "Lactobacillus acidophilus.fasta"
 Gene = Genome(filename, 1)
 #Gene.getUncertainty()
 Gene.getReadLengthGraph()
