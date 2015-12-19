@@ -48,7 +48,7 @@ class Genome:
                 break  
             print("Length", length, "Answer", Answer)
             Summary += [ Answer ]
-        CommonFunctions.WriteArrayinFile(Summary, "2Read_lengths"+self.Filename[:-6]+".csv")
+        CommonFunctions.WriteArrayinFile(Summary, "RepeatStructure"+self.Filename[:-6]+".csv")
            
     def NumberofRepeatsofLengthL(self, length):
         #print("DNA Length", len(self.DNA_current))
@@ -155,7 +155,7 @@ class Genome:
             Summary += [ Answer ]
             if Answer[-4] < 1:
                 break
-        CommonFunctions.WriteArrayinFile(Summary, "New_Summary_"+self.Filename[:-6]+".csv")
+        CommonFunctions.WriteArrayinFile(Summary, "Uncertainity_Summary_"+self.Filename[:-6]+".csv")
    
     def RepeatsofLengthL(self, length = 100):
         self.ReadLength_Considered = length
@@ -273,11 +273,8 @@ class Genome:
         return(Summary)
 
 
-filename = "RhodobacterSphaeroides.fasta"
-filename = "Buchnera_aphidicola.fasta"
-#filename = "StaphylococcusAureus.fasta"
-#filename = "Lactobacillus acidophilus.fasta"
-Gene = Genome(filename, 1)
+filename = ["RhodobacterSphaeroides.fasta", "Buchnera_aphidicola.fasta", "StaphylococcusAureus.fasta", "Lactobacillus acidophilus.fasta" ]
+Gene = Genome(filename[0], 1)
 #Gene.getUncertainty()
 Gene.getReadLengthGraph()
 
